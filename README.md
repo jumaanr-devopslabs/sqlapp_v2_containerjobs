@@ -70,3 +70,23 @@ The YAML file you provided is an Azure Pipeline configuration for building and p
 - The pipeline is triggered by changes to the `main` branch.
 
 This YAML file automates the process of building and deploying a Docker image for a .NET application to Azure Container Registry.
+
+# Dockerfile Explanation:
+
+Refer the docker file : [Dockerfile](sqlapp/Dockerfile)
+
+1. **`FROM mcr.microsoft.com/dotnet/aspnet:6.0`**:
+   - This line specifies the base image for the Docker container. The image used here is the official ASP.NET Core runtime image (`aspnet`) version 6.0 from Microsoft's container registry (`mcr.microsoft.com`). This image contains the necessary runtime environment to run ASP.NET Core applications.
+
+2. **`WORKDIR /app`**:
+   - This sets the working directory inside the container to `/app`. Any subsequent commands in the Dockerfile will be executed in this directory. If the directory doesn't exist, Docker will create it.
+
+3. **`COPY . .`**:
+   - This command copies all the files and directories from the current directory on the host machine (where the Docker build command is run) to the working directory (`/app`) inside the Docker container. The first `.` represents the source (current directory), and the second `.` represents the destination (working directory).
+
+4. **`EXPOSE 80`**:
+   - This instruction informs Docker that the container will listen on port 80 at runtime. It does not actually publish the port; it merely indicates that the application inside the container will use this port. The port can be mapped to the host machine's port when running the container.
+
+5. **`ENTRYPOINT ["dotnet", "sqlapp.dll"]`**:
+   - This sets the command that will be executed when the container starts. In this case, the `dotnet` command is run with the `sqlapp.dll` argument, which will start the ASP.NET Core application specified by the `sqlapp.dll` file. This ensures that the container runs the application when started.
+
