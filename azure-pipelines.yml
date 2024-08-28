@@ -42,20 +42,15 @@ stages:
         arguments: '--configuration $(buildConfiguration)'
 
     - task: DotNetCoreCLI@2
+      displayName: Publish the Build to Release Directory
       inputs:
         command: publish
         publishWebProjects: True
         zipAfterPublish: false
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        buildContext: '$(Build.ArtifactStagingDirectory)/sqlapp'
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-          latest
+        
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Publish ArtifactStagingDirectory' #Publish artifact staging directory to next stage
+      artifact: buildartifacts
+
             
