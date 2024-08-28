@@ -19,6 +19,7 @@ variables:
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
+  
 
 stages:
 - stage: Build
@@ -48,9 +49,9 @@ stages:
         publishWebProjects: True
         zipAfterPublish: false
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-        
+#Following task is the same task as PublishPipelineArtifact@1, the publish is a short form of that particular task
     - publish: '$(Build.ArtifactStagingDirectory)'
-      displayName: 'Publish ArtifactStagingDirectory' #Publish artifact staging directory to next stage
+      displayName: 'Publish ArtifactStagingDirectory' #its going to make build artifacts available as part of pipeline
       artifact: buildartifacts
 
             
