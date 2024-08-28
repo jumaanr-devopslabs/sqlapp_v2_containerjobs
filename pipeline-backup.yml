@@ -1,0 +1,58 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'b25b4f04-00aa-4787-a48a-168193cb19cf'
+  imageRepository: 'sqlappdocker'
+  containerRegistry: 'azcrazdevopseastus.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/sqlapp/Dockerfile'
+  tag: '$(Build.BuildId)'
+  group: dockervariablegroup
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+  
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '6.x'
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: Publish the Build to Release Directory
+      inputs:
+        command: publish
+        publishWebProjects: True
+        zipAfterPublish: false
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+      #Following task is the same task as PublishPipelineArtifact@1, the publish is a short form of that particular task
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Publish ArtifactStagingDirectory' #its going to make build artifacts available as part of pipeline
+      artifact: buildartifacts
+
+  
