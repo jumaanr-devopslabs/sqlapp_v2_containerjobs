@@ -49,9 +49,31 @@ stages:
         publishWebProjects: True
         zipAfterPublish: false
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-#Following task is the same task as PublishPipelineArtifact@1, the publish is a short form of that particular task
+
+      #Following task is the same task as PublishPipelineArtifact@1, the publish is a short form of that particular task
     - publish: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Publish ArtifactStagingDirectory' #its going to make build artifacts available as part of pipeline
       artifact: buildartifacts
 
-            
+- stage: Deploy
+  displayName: Push Stage
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - download: current
+        artifact: buildartifacts
+      - task: Docker@2
+        displayName: Build & Push Image to Container Registry
+        inputs:
+          command: buildAndPush
+          buildContext: '$(Pipeline.Workspace/buildartifacts/sqlapp)'
+          repository: $(imageRepository)
+          dockerfile: $(dockerfilePath)
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: |
+            $(tag)
+            latest
+  
