@@ -1,4 +1,4 @@
-# Azure Pipeline YAML Explanation
+# Azure Pipeline YAML File Explanation
 
 This Azure Pipeline YAML file defines a CI/CD process for building and deploying a Docker image to Azure Container Registry (ACR). Below is a breakdown of the key components:
 
@@ -54,4 +54,3 @@ This Azure Pipeline YAML file defines a CI/CD process for building and deploying
 ### **Summary**
 This pipeline automates the process of building a .NET application, creating a Docker image, and pushing it to Azure Container Registry. The build stage compiles the application, and the deploy stage pushes the resulting Docker image to ACR. This setup allows for continuous integration and continuous deployment of the application.
 
-You can copy and paste this markdown explanation into your GitHub readme file for documentation purposes.
