@@ -76,4 +76,3 @@ stages:
           tags: |
             $(tag)
             latest
-  

@@ -29,6 +29,7 @@ stages:
     displayName: Build
     pool:
       vmImage: $(vmImageName)
+    container: mcr.microsoft.com/dotnet/sdk:6.0 #Uses container to run build job
     steps:
     - task: UseDotNet@2
       inputs:
