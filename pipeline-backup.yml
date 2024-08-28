@@ -55,4 +55,25 @@ stages:
       displayName: 'Publish ArtifactStagingDirectory' #its going to make build artifacts available as part of pipeline
       artifact: buildartifacts
 
+- stage: Deploy
+  displayName: Push Stage
+  jobs:
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - download: current
+        artifact: buildartifacts
+      - task: Docker@2
+        displayName: Build & Push Image to Container Registry
+        inputs:
+          command: buildAndPush
+          buildContext: '$(Pipeline.Workspace)/buildartifacts/sqlapp'
+          repository: $(imageRepository)
+          dockerfile: $(dockerfilePath)
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: |
+            $(tag)
+            latest
   
